@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yukes MT4 to PNG Converter", "Yukes MT4 to PNG Converter\Yukes MT4 to PNG Converter.csproj", "{A90C0EBE-7B03-4452-9D3B-7E27D1D3565D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A90C0EBE-7B03-4452-9D3B-7E27D1D3565D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A90C0EBE-7B03-4452-9D3B-7E27D1D3565D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A90C0EBE-7B03-4452-9D3B-7E27D1D3565D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A90C0EBE-7B03-4452-9D3B-7E27D1D3565D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F01F6C6B-E5FF-4042-9083-FD2E61A551B4}
+	EndGlobalSection
+EndGlobal
