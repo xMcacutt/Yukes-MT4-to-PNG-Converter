@@ -76,6 +76,7 @@ namespace Yukes_MT4_to_PNG_Converter
                 {
                     Console.WriteLine("Please enter path to MT4");
                     _path = Console.ReadLine().Replace("\"", "");
+                    Console.WriteLine("Entered path: " + _path); // Add this line for debugging
                     while (!File.Exists(_path) || !_path.EndsWith(".mt4", StringComparison.CurrentCultureIgnoreCase))
                     {
                         Console.WriteLine("Path was invalid");
@@ -102,14 +103,13 @@ namespace Yukes_MT4_to_PNG_Converter
             MT4 mt4 = new();
             mt4.Width = BitConverter.ToUInt16(ReadBytes(f, 2), 0);
             mt4.Height = mt4.Width;
-            f.Seek(0x40, SeekOrigin.Begin);
-            mt4.BitDepth = (int)Math.Log2(BitConverter.ToInt16(ReadBytes(f, 2), 0));
+            f.Seek(0x47, SeekOrigin.Begin);
+            mt4.BitDepth = 8;
             f.Seek(0x14, SeekOrigin.Begin);
             mt4.PaletteOffset = (int)BitConverter.ToUInt32(ReadBytes(f, 4), 0) + 0x10;
             f.Seek(mt4.PaletteOffset, SeekOrigin.Begin);
             mt4.Palette = ReadBytes(f, (int)(4 * Math.Pow(2, mt4.BitDepth)));
             f.Seek(0x50, SeekOrigin.Begin);
-            long x = f.Position;
             mt4.Data = ReadBytes(f, (int)(mt4.Width * mt4.Height * ((float)mt4.BitDepth / 8f)));
             f.Close();
 
@@ -117,9 +117,9 @@ namespace Yukes_MT4_to_PNG_Converter
             mt4.RGBAData = ComposeRGBA(mt4.Data, mt4.Palette, mt4.BitDepth);
 
             Image<Rgba32> image = Image.LoadPixelData<Rgba32>(mt4.RGBAData, mt4.Width, mt4.Height);
-            image.Save(Path.GetFileNameWithoutExtension(path) + ".png", new SixLabors.ImageSharp.Formats.Png.PngEncoder());
+            string outputPath = Path.ChangeExtension(path, ".png");
+            image.Save(outputPath, new SixLabors.ImageSharp.Formats.Png.PngEncoder());
             return;
-
         }
 
         public static void ConvertAll(string inDir, string outDir)
@@ -137,13 +137,13 @@ namespace Yukes_MT4_to_PNG_Converter
                 mt4.Width = BitConverter.ToUInt16(ReadBytes(f, 2), 0);
                 mt4.Height = mt4.Width;
                 f.Seek(0x40, SeekOrigin.Begin);
-                mt4.BitDepth = (int)Math.Log2(BitConverter.ToInt16(ReadBytes(f, 2), 0));
+                mt4.BitDepth = 8;
                 f.Seek(0x14, SeekOrigin.Begin);
                 mt4.PaletteOffset = (int)BitConverter.ToUInt32(ReadBytes(f, 4), 0) + 0x10;
                 f.Seek(mt4.PaletteOffset, SeekOrigin.Begin);
-                mt4.Palette = ReadBytes(f, (int)(f.Length - mt4.PaletteOffset));
+                mt4.Palette = ReadBytes(f, (int)(4 * Math.Pow(2, mt4.BitDepth)));
                 f.Seek(0x50, SeekOrigin.Begin);
-                mt4.Data = ReadBytes(f, (int)(f.Length - mt4.Palette.Length - 0x40));
+                mt4.Data = ReadBytes(f, (int)(mt4.Width * mt4.Height * ((float)mt4.BitDepth / 8f)));
                 f.Close();
 
                 mt4.Palette = PS2ShiftPalette(mt4.Palette);
@@ -156,8 +156,7 @@ namespace Yukes_MT4_to_PNG_Converter
 
                 // Create the necessary directories if they don't exist
                 Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
-                image.Save(Path.GetFileNameWithoutExtension(outputPath) + ".png", new SixLabors.ImageSharp.Formats.Png.PngEncoder());
-                return;
+                image.Save(Path.ChangeExtension(outputPath, ".png"), new SixLabors.ImageSharp.Formats.Png.PngEncoder());
             }
         }
 
